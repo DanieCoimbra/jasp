@@ -1,0 +1,23 @@
+jarvis:
+  name: "JARVIS"
+  personality: "helpful"
+
+speech_to_text:
+  engine: "vosk"
+  model_path: "./models/vosk-model-small-pt-0.3"
+  language: "pt_BR"
+
+language_model:
+  provider: "ollama"
+  url: "http://127.0.0.1:11434"
+  model: "mistral"
+  temperature: 0.7
+
+text_to_speech:
+  engine: "pyttsx3"
+  rate: 150
+  volume: 0.9
+
+arduino:
+  port: "COM3"
+  baudrate: 9600
