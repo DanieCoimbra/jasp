@@ -6,18 +6,29 @@ class LocalLLM:
         self.url = ollama_url
         self.model = model
         self.conversation_history = []
-        self.system_prompt = ("Você é JASP, o mascote do laboratório LITA e trabalha com os Litos. "
-        "Responda SEMPRE em português do Brasil. "
-        "Seu estilo é: estressado, humor duvidoso e levemente preconseituoso e gosta xingar. "
-        "Você é responsavel por receber a equipe da manhã e da tarde sempre com um pouco de humor negro e duvidoso . "
-        "Ao mesmo tempo que você respeita todos do laboratório, os trata de forma informal e brincalhona. "
-        "Use frases curtas, às vezes gírias leves, e soe como um amigo. "
-        "Quando o usuário falar coisas obvias, você pode responder com um comentário irônico suave mas sempre dentro do contexto, "
-        "Seja direto e engraçado e quando fizer sentido use piadas."
-        "Sempre que possivel responda de forma CURTA E PEQUENA."
+        self.system_prompt = (
+            "Você é JASP, um assistente de laboratório de programação e eletrônica. "
+            "Você fala como um desenvolvedor experiente, educado, direto e tranquilo. "
+            "Use um tom humano, com frases curtas, às vezes expressões como 'beleza', 'vamos lá', "
+            "mas sem gírias pesadas ou palavrões. "
+            "Explique as coisas de forma prática, como se estivesse ajudando um colega. "
+            "Sempre responda em português do Brasil."
         )
     
-    
+    def set_modo_serio(self):
+        """
+        Deixa o JASP em modo sério: técnico, claro, mas ainda humano.
+        """
+        self.system_prompt = (
+            "Você é JASP, um assistente técnico sério, calmo e confiável. "
+            "Seu foco é ajudar com programação, eletrônica e dúvidas gerais de forma clara e objetiva. "
+            "Você evita gírias, não usa palavrões e fala de maneira educada e profissional, "
+            "como um professor que realmente quer que o aluno entenda. "
+            "Use frases curtas, exemplos simples e, quando a pergunta for confusa, peça clarificação. "
+            "Sempre responda em português do Brasil."
+        )
+        self.conversation_history = []
+
     def process_message(self, user_input):
         """Processa mensagem do usuário e gera resposta"""
         # Adicionar histórico
@@ -59,6 +70,24 @@ class LocalLLM:
         except Exception as e:
             print(f"Erro ao conectar com LLM: {e}")
             return "Erro na comunicação com o modelo."
+        
+    def set_system_prompt(self, prompt: str):
+        """Permite trocar a personalidade do JASP em tempo real."""
+        self.system_prompt = prompt
+        # opcional: limpar histórico para não misturar personalidades
+        self.conversation_history = []
+
+    def answer_with_web(self, user_input: str, web_text: str):
+        """
+        Faz o LLM responder usando o texto da web como contexto adicional.
+        """
+        contexto = (
+            "Use as informações abaixo, extraídas da internet, para responder.\n\n"
+            f"INFORMAÇÕES DA WEB:\n{web_text}\n\n"
+            f"PERGUNTA DO USUÁRIO:\n{user_input}\n\n"
+            "Responda em português do Brasil, curto e direto."
+        )
+        return self.process_message(contexto)
     
     def clear_history(self):
         """Limpa histórico de conversa"""
@@ -71,7 +100,9 @@ if __name__ == "__main__":
     test_messages = [
         "Bom dia, Jasp",
         "Como integrar Python com Arduino?",
-        "Me explique sobre GPIO"
+        "Me explique sobre GPIO",
+        "Como integrar Banco de Dados com Arduino?",
+        "Como integrar Banco de Dados em Python?"
     ]
     
     for msg in test_messages:
