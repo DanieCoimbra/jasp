@@ -57,3 +57,20 @@ class NeuralTTS:
     def speak(self, text: str):
         """Interface compatível com a antiga (pode só delegar para blocking)."""
         self.speak_blocking(text)
+
+if __name__ == "__main__":
+    tts = NeuralTTS()
+
+    textos = [
+        #"JASP iniciando..., QUEM..., ME ACORDOU!!!",
+        #"Olá! Eu sou JASP, o pinguim robótico mais INTELIGENTE do PLANETA!!!!",
+        #"Como posso ajudá-lo?",
+        #"Modo Apresentação!",
+        "Modo BrainRoti!",
+
+
+    ]
+
+    for t in textos:
+        print("JASP:", t)
+        tts.speak_blocking(t)
